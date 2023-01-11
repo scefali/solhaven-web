@@ -2,7 +2,6 @@ import React from "react";
 import { Auth, ThemeSupa } from "@supabase/auth-ui-react";
 import { useSession, useSupabaseClient } from "@supabase/auth-helpers-react";
 
-import AuthModal from "components/AuthModal";
 
 const Home = () => {
   const session = useSession();
@@ -18,6 +17,7 @@ const Home = () => {
             appearance={{ theme: ThemeSupa }}
             theme="dark"
             providers={["google"]}
+            redirectTo="http://localhost:3001/account/created"
           />
         ) : (
           <p>Account page will go here.</p>
