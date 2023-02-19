@@ -17,7 +17,7 @@ const Home = () => {
             appearance={{ theme: ThemeSupa }}
             theme="dark"
             providers={["google"]}
-            redirectTo="http://localhost:3001/account/created"
+            redirectTo="http://localhost:3000/api/auth/created"
           />
         ) : (
           <p>Account page will go here.</p>
