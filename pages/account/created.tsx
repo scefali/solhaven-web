@@ -5,30 +5,41 @@ import { createServerSupabaseClient } from "@supabase/auth-helpers-nextjs";
 export const getServerSideProps = async (
   ctx: Parameters<GetServerSideProps>[0]
 ) => {
+  console.log("getServerSideProps", ctx.req.headers.cookie)
   // Create authenticated Supabase Client
-  const supabase = createServerSupabaseClient(ctx);
-  // Check if we have a session
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
+  // const supabase = createServerSupabaseClient(ctx);
+  // // Check if we have a session
+  // const {
+  //   data: { session },
+  // } = await supabase.auth.getSession();
 
-  if (!session) {
-    return {
-      redirect: {
-        destination: "/account",
-        permanent: false,
-      },
-    };
-  }
+  // if (!session) {
+  //   return {
+  //     redirect: {
+  //       destination: "/account",
+  //       permanent: false,
+  //     },
+  //   };
+  // }
 
-  console.log({ session });
+  // console.log({ session });
 
-  return {
-    props: {
-      initialSession: session,
-      user: session.user,
-    },
-  };
+  // return {
+  //   props: {
+  //     initialSession: session,
+  //     user: session.user,
+  //   },
+  // };
+
+
+    // return {
+    //   redirect: {
+    //     destination: "/api/auth/created",
+    //     permanent: false,
+    //   },
+    // };
+
+    return {props: {}}
 };
 
 const AccountCreated = () => {
