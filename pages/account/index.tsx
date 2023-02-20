@@ -19,7 +19,7 @@ const Home = () => {
             // seems that only a page will set the Supabase cookie
             // after which we can redirect to an api page to update the DB
             // redirectTo="http://localhost:3000/api/auth/created"
-            redirectTo="http://localhost:3000/account/created"
+            redirectTo="http://localhost:3000/account/signup-router"
           />
         ) : (
           <p>Account page will go here.</p>

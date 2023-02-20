@@ -14,19 +14,6 @@ const AuthCreated: NextApiHandler = async (req: NextApiRequest, res: NextApiResp
   if (req.method !== 'GET') {
     return res.redirect('account');
   }
-  console.log('req headers', req.headers)
-
-  // const token = await getToken({ req })
-
-  // console.log('token', token)
-
-  // const session = await getServerSession(req, res, authOptions);
-  // console.log('session', session);
-  // if (!session) {
-  //   return res.status(401).json({ message: 'Unauthorized' });
-  // }
-
-  // const { user } = session;
 
   const supabaseServerClient = createServerSupabaseClient<Database>({
     req,
@@ -35,10 +22,9 @@ const AuthCreated: NextApiHandler = async (req: NextApiRequest, res: NextApiResp
   const {
     data: { user },
   } = await supabaseServerClient.auth.getUser();
-  console.log('user', user);
 
   if (!user) {
-    return res.status(401).json({ message: 'Unauthorized' });
+    return res.redirect(307, '/account');
   }
 
   try {
@@ -56,7 +42,7 @@ const AuthCreated: NextApiHandler = async (req: NextApiRequest, res: NextApiResp
       .status(200)
       .json({ message: 'Profile created or updated successfully', data: profile });
   } catch (error) {
-    return res.status(500).json({ message: error?.message });
+    return res.status(500).json({ message: error });
   }
 };
 
