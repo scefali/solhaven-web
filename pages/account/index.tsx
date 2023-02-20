@@ -1,7 +1,6 @@
-import React from "react";
-import { Auth, ThemeSupa } from "@supabase/auth-ui-react";
-import { useSession, useSupabaseClient } from "@supabase/auth-helpers-react";
-
+import React from 'react';
+import { Auth, ThemeSupa } from '@supabase/auth-ui-react';
+import { useSession, useSupabaseClient } from '@supabase/auth-helpers-react';
 
 const Home = () => {
   const session = useSession();
@@ -16,8 +15,11 @@ const Home = () => {
             supabaseClient={supabase}
             appearance={{ theme: ThemeSupa }}
             theme="dark"
-            providers={["google"]}
-            redirectTo="http://localhost:3001/account/created"
+            providers={['google']}
+            // seems that only a page will set the Supabase cookie
+            // after which we can redirect to an api page to update the DB
+            // redirectTo="http://localhost:3000/api/auth/created"
+            redirectTo="http://localhost:3000/account/signup-router"
           />
         ) : (
           <p>Account page will go here.</p>
