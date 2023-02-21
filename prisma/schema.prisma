@@ -19,4 +19,5 @@ model Profile {
   services        String?
   workingHours    String?
   profileImageUrl String?
+  firstName       String?
 }

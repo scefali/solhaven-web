@@ -1,12 +1,6 @@
 import { NextApiHandler, NextApiRequest, NextApiResponse } from 'next';
-import { getServerSession } from 'next-auth/next';
-import { PrismaClient, Profile } from '@prisma/client';
-import { createServerSupabaseClient } from '@supabase/auth-helpers-nextjs';
-import { getToken } from "next-auth/jwt"
-
-
-import type { Database } from 'types/supabase_auth';
-import { authOptions } from 'pages/api/auth/[...nextauth]';
+import { PrismaClient } from '@prisma/client';
+import { getSupabaseUser } from 'utils/server/auth';
 
 const prisma = new PrismaClient();
 
@@ -15,13 +9,7 @@ const AuthCreated: NextApiHandler = async (req: NextApiRequest, res: NextApiResp
     return res.redirect('account');
   }
 
-  const supabaseServerClient = createServerSupabaseClient<Database>({
-    req,
-    res,
-  });
-  const {
-    data: { user },
-  } = await supabaseServerClient.auth.getUser();
+  const user = await getSupabaseUser({ req, res });
 
   if (!user) {
     return res.redirect(307, '/account');
@@ -42,7 +30,7 @@ const AuthCreated: NextApiHandler = async (req: NextApiRequest, res: NextApiResp
       .status(200)
       .json({ message: 'Profile created or updated successfully', data: profile });
   } catch (error) {
-    return res.status(500).json({ message: error });
+    return res.status(500).json({ message: JSON.stringify(error) });
   }
 };
 

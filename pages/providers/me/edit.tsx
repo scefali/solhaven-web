@@ -1,12 +1,14 @@
 import { GetServerSideProps } from 'next';
 import { useForm } from 'react-hook-form';
-import { supabase } from 'lib/supabase';
 import { PrismaClient, Prisma } from '@prisma/client';
+import toast, { Toaster } from 'react-hot-toast';
+import { createServerSupabaseClient } from '@supabase/auth-helpers-nextjs';
+
+import { supabase } from 'lib/supabase';
 import Layout from 'components/Layout';
 import Input from 'components/Input';
 import TextArea from 'components/TextArea';
 import Button from 'components/Button';
-import { createServerSupabaseClient } from '@supabase/auth-helpers-nextjs';
 
 const prisma = new PrismaClient();
 
@@ -14,20 +16,24 @@ const prisma = new PrismaClient();
 // type Profile = ReturnType<Awaited<typeof prisma.profile.findUniqueOrThrow>>;
 type Profile = {
   id: number;
-  bio: string;
-  services: string;
-  workingHours: string;
-  profileImageUrl: string;
+  bio?: string;
+  services?: string;
+  workingHours?: string;
+  profileImageUrl?: string;
+  firstName?: string;
 };
 
 type Props = {
   profile: Profile | null;
 };
 
-type ProfileFormData = Pick<Profile, 'bio' | 'services' | 'workingHours' | 'profileImageUrl'>;
+type ProfileFormData = Pick<
+  Profile,
+  'bio' | 'services' | 'workingHours' | 'profileImageUrl' | 'firstName'
+>;
 
 export default function ProfileEditPage({ profile }: Props) {
-  const { register, handleSubmit, setValue } = useForm<ProfileFormData>({
+  const { register, handleSubmit } = useForm<ProfileFormData>({
     defaultValues: {
       bio: profile?.bio || '',
       services: profile?.services || '',
@@ -42,31 +48,38 @@ export default function ProfileEditPage({ profile }: Props) {
 
     const { bio, services, workingHours, profileImageUrl } = formData;
 
-    const result = await fetch('/api/profile', {
+    const result = await fetch('/api/providers/me', {
       method: 'PUT',
-      // headers: {
-      //   'Content-Type': 'application/json',
-      //   Authorization: `Bearer ${session.accessToken}`,
-      // },
       body: JSON.stringify({ bio, services, workingHours, profileImageUrl }),
     });
 
+
     if (result.ok) {
-      console.log('Profile updated successfully');
+      toast('Profile updated successfully', {position: 'bottom-right'})
     } else {
-      console.error('Failed to update profile');
+      toast('Failed to update profile', {position: 'bottom-right'});
     }
   }
 
   return (
     <Layout title="Edit Profile">
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Input label="Profile Image URL" {...register('profileImageUrl')} />
-        <TextArea label="Bio" {...register('bio')} />
-        <TextArea label="Services" {...register('services')} />
-        <TextArea label="Working Hours" {...register('workingHours')} />
+        <Input label="Profile Image URL" {...register('profileImageUrl')} placeholder="" />
+        <TextArea
+          label="First Name"
+          {...register('firstName')}
+          placeholder="What's your first name?"
+        />
+        <TextArea label="Bio" {...register('bio')} placeholder="Tell us about yourself" />
+        <TextArea label="Services" {...register('services')} placeholder="What do you do?" />
+        <TextArea
+          label="Working Hours"
+          {...register('workingHours')}
+          placeholder="Which days and what times do you work?"
+        />
         <Button type="submit">Save</Button>
       </form>
+      <Toaster />
     </Layout>
   );
 }

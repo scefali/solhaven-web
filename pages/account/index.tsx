@@ -1,6 +1,7 @@
 import React from 'react';
 import { Auth, ThemeSupa } from '@supabase/auth-ui-react';
 import { useSession, useSupabaseClient } from '@supabase/auth-helpers-react';
+import Link from 'next/link';
 
 const Home = () => {
   const session = useSession();
@@ -22,7 +23,10 @@ const Home = () => {
             redirectTo="http://localhost:3000/account/signup-router"
           />
         ) : (
-          <p>Account page will go here.</p>
+          <div>
+            <p>Account page will go here.</p>
+            <Link href="/providers/me/edit">Edit Account</Link>
+          </div>
         )}
       </div>
     </div>
