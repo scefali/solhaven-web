@@ -1,7 +1,6 @@
 import React from 'react';
-import { GetServerSideProps } from 'next';
 import Router from 'next/router';
-import { useSession, useSupabaseClient } from '@supabase/auth-helpers-react';
+import { useSession } from '@supabase/auth-helpers-react';
 
 const SignupRouter = () => {
   const session = useSession();

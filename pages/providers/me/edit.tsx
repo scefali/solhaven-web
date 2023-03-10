@@ -4,24 +4,15 @@ import { PrismaClient, Prisma } from '@prisma/client';
 import toast, { Toaster } from 'react-hot-toast';
 import { createServerSupabaseClient } from '@supabase/auth-helpers-nextjs';
 
+import { getSupabaseUser } from 'utils/server/auth';
 import { supabase } from 'lib/supabase';
 import Layout from 'components/Layout';
 import Input from 'components/Input';
 import TextArea from 'components/TextArea';
 import Button from 'components/Button';
+import type { Profile } from 'types/Profile';
 
 const prisma = new PrismaClient();
-
-// TODO: use Prisma type
-// type Profile = ReturnType<Awaited<typeof prisma.profile.findUniqueOrThrow>>;
-type Profile = {
-  id: number;
-  bio?: string;
-  services?: string;
-  workingHours?: string;
-  profileImageUrl?: string;
-  firstName?: string;
-};
 
 type Props = {
   profile: Profile | null;
@@ -31,6 +22,35 @@ type ProfileFormData = Pick<
   Profile,
   'bio' | 'services' | 'workingHours' | 'profileImageUrl' | 'firstName'
 >;
+
+export const getServerSideProps: GetServerSideProps<Props> = async ({ req, res }) => {
+  const user = await getSupabaseUser({ req, res } as any);
+  if (!user) {
+    return {
+      redirect: {
+        destination: '/account',
+        permanent: false,
+      },
+    };
+  }
+
+  const profile = await prisma.profile.findUnique({ where: { supabaseUserId: user.id } });
+
+  if (!profile) {
+    return {
+      redirect: {
+        destination: '/account',
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {
+      profile: JSON.parse(JSON.stringify(profile)),
+    },
+  };
+};
 
 export default function ProfileEditPage({ profile }: Props) {
   const { register, handleSubmit } = useForm<ProfileFormData>({
@@ -53,11 +73,10 @@ export default function ProfileEditPage({ profile }: Props) {
       body: JSON.stringify({ bio, services, workingHours, profileImageUrl }),
     });
 
-
     if (result.ok) {
-      toast('Profile updated successfully', {position: 'bottom-right'})
+      toast('Profile updated successfully', { position: 'bottom-right' });
     } else {
-      toast('Failed to update profile', {position: 'bottom-right'});
+      toast('Failed to update profile', { position: 'bottom-right' });
     }
   }
 
@@ -83,38 +102,3 @@ export default function ProfileEditPage({ profile }: Props) {
     </Layout>
   );
 }
-
-export const getServerSideProps: GetServerSideProps<Props> = async ({ req, res }) => {
-  const supabase = createServerSupabaseClient({ req, res } as any);
-  // Check if we have a session
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
-  console.log('session', session);
-  if (!session) {
-    return {
-      redirect: {
-        destination: '/account',
-        permanent: false,
-      },
-    };
-  }
-
-  const { user } = session;
-  const profile = await prisma.profile.findUnique({ where: { supabaseUserId: user.id } });
-
-  if (!profile) {
-    return {
-      redirect: {
-        destination: '/account',
-        permanent: false,
-      },
-    };
-  }
-
-  return {
-    props: {
-      profile: JSON.parse(JSON.stringify(profile)),
-    },
-  };
-};
