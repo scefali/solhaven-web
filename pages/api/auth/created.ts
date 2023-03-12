@@ -26,9 +26,7 @@ const AuthCreated: NextApiHandler = async (req: NextApiRequest, res: NextApiResp
       },
     });
 
-    return res
-      .status(200)
-      .json({ message: 'Profile created or updated successfully', data: profile });
+    return res.redirect(307, '/providers/me/edit');
   } catch (error) {
     return res.status(500).json({ message: JSON.stringify(error) });
   }

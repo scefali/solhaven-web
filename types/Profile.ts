@@ -1,10 +1,6 @@
-// TODO: use Prisma type
-// type Profile = ReturnType<Awaited<typeof prisma.profile.findUniqueOrThrow>>;
-export type Profile = {
-  id: number;
-  bio?: string;
-  services?: string;
-  workingHours?: string;
-  profileImageUrl?: string;
-  firstName?: string;
-};
+import { Prisma } from "@prisma/client";
+import { prisma } from "lib/prisma";
+
+export type Profile = Prisma.PromiseReturnType<
+  typeof prisma.profile.findUniqueOrThrow
+>;
