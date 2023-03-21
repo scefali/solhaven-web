@@ -93,7 +93,7 @@ export default function ProfileEditPage({ profile }: Props) {
       <form onSubmit={handleSubmit(onSubmit)}>
         <Input
           label="Profile Image URL"
-          {...register("profileImageUrl")}
+          inputProps={register("profileImageUrl")}
           placeholder=""
         />
         <TextArea
@@ -108,7 +108,7 @@ export default function ProfileEditPage({ profile }: Props) {
         />
         <TextArea
           label="Services"
-          inputProps={"services"}
+          inputProps={register("services")}
           placeholder="What do you do?"
         />
         <TextArea

@@ -9,6 +9,14 @@ const nextConfig = {
             permanent: true,
         }, ]
     },
+    images: {
+      remotePatterns: [
+        {
+          protocol: "https",
+          hostname: "**",
+        },
+      ],
+    },
     experimental: {
         appDir: true,
     }

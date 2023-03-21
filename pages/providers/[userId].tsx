@@ -14,11 +14,13 @@ type ProfileProps = {
   error?: string;
 };
 
-export const getServerSideProps: GetServerSideProps<ProfileProps> = async (
+
+export const getServerSideProps: GetServerSideProps<ProfileProps, {userId: string}> = async (
   context
 ) => {
   const { params } = context;
-  const { userId } = params;
+  // TODO: fix
+  const { userId } = params as {userId: string};
   console.log({params, userId})
   let supabaseUserId = userId;
 
@@ -91,6 +93,8 @@ const ProfilePage: NextPage<ProfileProps> = ({ profile, error }) => {
             src={profile.profileImageUrl}
             alt="Profile Image"
             className="w-24 h-24 object-cover rounded-full"
+            width={96}
+            height={96}
           />
         )}
         <div className="ml-4">

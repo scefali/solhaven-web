@@ -25,20 +25,20 @@ export default async function handle(
     return res.status(401).json({ error: "Unauthorized" });
   }
 
-  const result =
+  const validatedData =
     ProfileSchema.safeParse(JSON.parse(req.body));
-  if (!result.success) {
-    return res.status(400).json({ error: result.error});
+  if (!validatedData.success) {
+    return res.status(400).json({ error: validatedData.error});
   }
-  const { firstName, bio, services, workingHours, profileImageUrl } = result.data;
 
   try {
     const result = await prisma.profile.update({
       where: { supabaseUserId: user.id },
-      data: { firstName, bio, services, workingHours, profileImageUrl },
+      data: validatedData.data,
     });
     return res.json(result);
   } catch (error) {
+    console.error(error);
     return res.status(500).json({ error: error });
   }
 }
