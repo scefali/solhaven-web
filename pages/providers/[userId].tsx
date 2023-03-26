@@ -82,28 +82,35 @@ const ProfilePage: NextPage<ProfileProps> = ({ profile, error }) => {
   };
 
   return (
-    <Layout title="Profile">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">{profile.firstName}</h1>
-        <Button onClick={handleEditClick}>Edit Profile</Button>
+<Layout title="Profile">
+  <div className="flex justify-between items-center">
+    <h1 className="text-2xl font-bold">{profile.firstName}</h1>
+    <Button onClick={handleEditClick}>Edit Profile</Button>
+  </div>
+  <div className="flex justify-start items-center my-4">
+    {profile.profileImageUrl && (
+      <Image
+        src={profile.profileImageUrl}
+        alt="Profile Image"
+        className="w-24 h-24 object-cover rounded-full"
+        width={96}
+        height={96}
+      />
+    )}
+    <div className="ml-4">
+      <p className="font-bold">{profile.firstName}</p>
+      <div className="flex flex-col">
+        <label htmlFor="services" className="font-bold">Services:</label>
+        <p id="services" className="text-gray-600">{profile.services}</p>
       </div>
-      <div className="flex justify-start items-center my-4">
-        {profile.profileImageUrl && (
-          <Image
-            src={profile.profileImageUrl}
-            alt="Profile Image"
-            className="w-24 h-24 object-cover rounded-full"
-            width={96}
-            height={96}
-          />
-        )}
-        <div className="ml-4">
-          <p className="font-bold">{profile.firstName}</p>
-          <p className="text-gray-600">{profile.services}</p>
-          <p className="text-gray-600">{profile.workingHours}</p>
-        </div>
+      <div className="flex flex-col">
+        <label htmlFor="workingHours" className="font-bold">Working Hours:</label>
+        <p id="workingHours" className="text-gray-600">{profile.workingHours}</p>
       </div>
-    </Layout>
+    </div>
+  </div>
+</Layout>
+
   );
 };
 
